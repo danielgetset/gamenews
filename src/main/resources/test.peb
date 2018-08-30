@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+
+<channel>
+    <title>W3Schools Home Page</title>
+    <link>https://www.w3schools.com</link>
+    <description>Free web building tutorials</description>
+    {% for pulse in pulses %}
+    <item>
+        <id>{{ pulse.id }}</id>
+        <pulsescore>{{ pulse.pulsescore }}</pulsescore>
+        <title>{{ pulse.title }}</title>
+        <summary>{{ pulse.summary }}</summary>
+        <url>{{ pulse.url }}</url>
+        <uid>{{ pulse.uid }}</uid>
+        <author>{{ pulse.author }}</author>
+        <publishedat>{{ pulse.publishedat }}</publishedat>
+    </item>
+    {% endfor %}
+
+</channel>
+</rss>
