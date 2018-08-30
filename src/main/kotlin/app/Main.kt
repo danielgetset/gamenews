@@ -11,15 +11,16 @@ import io.javalin.rendering.JavalinRenderer
 
 fun main(args: Array<String>) {
 
-    val parameters = mapOf("fields" to "*", "limit" to "10")
+    val parameters = mapOf("fields" to "*", "limit" to "50") // anything over 50 gave me response 400
 
     val response : Response = khttp.get(
             url = "https://api-endpoint.igdb.com/pulses/",
             headers = mapOf("user-key" to "806879ca5122ba2a8accaa412e6a2f2d", "Accept" to "application/json"),
             params = parameters)
 
-    val pulses : JSONArray  = response.jsonArray
-    //print(pulses[0])
+    print(response)
+    val pulses : JSONArray = response.jsonArray
+    print(pulses[0])
 
     val list = mutableListOf<Map<String, Any>>()
 
@@ -34,6 +35,7 @@ fun main(args: Array<String>) {
                 "url" to item["url"],
                 "uid" to item["uid"],
                 "publishedat" to item["published_at"]
+                // author doesn't exist? : "author" to item["author"]
         )
 
         list.add(map)
