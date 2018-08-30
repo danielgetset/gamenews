@@ -2,7 +2,6 @@ package app
 
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
-import khttp.get
 import khttp.responses.Response
 import org.json.JSONArray
 import io.javalin.rendering.template.JavalinPebble
@@ -21,8 +20,6 @@ fun main(args: Array<String>) {
 
     val pulses : JSONArray  = response.jsonArray
     //print(pulses[0])
-
-    val map = emptyMap<String, String>()
 
     val list = mutableListOf<Map<String, Any>>()
 
