@@ -1,36 +1,53 @@
 package app
 
-import io.javalin.Handler
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
 import khttp.responses.Response
 import org.json.JSONArray
 import io.javalin.rendering.template.JavalinPebble
 import io.javalin.rendering.JavalinRenderer
-import java.util.*
+import java.io.File
 import kotlin.concurrent.timer
 
 
 
 fun main(args: Array<String>) {
 
-    //timer(initialDelay = 1000, period = 10000) {
-    //    System.out.print("hello")
-    //    //getGameNewsAndUpdate()
-    //}
-
     val pebble = JavalinPebble
 
-    JavalinRenderer.register(pebble, ".peb", ".pebble", ".html")
+    JavalinRenderer.register(pebble, ".peb", ".pebble", ".html", ".xml")
 
-    val app = Javalin.create().start(7000)
+    val app = Javalin.create().enableStaticFiles("/public").start(7000)
 
     app.routes {
 
         get("/") { ctx ->
-            ctx.render("news.peb", mapOf("pulses" to getGameNewsAndUpdate()))
+            ctx.render("news.xml", mapOf("pulses" to getGameNewsAndUpdate()))
         }
 
+    }
+
+    app.after("/") { ctx ->
+
+        ctx.redirect("/rss.xml")
+
+    }
+
+    generateRss()
+
+}
+
+fun generateRss () {
+
+    timer(initialDelay = 1000, period = 30000) {
+
+        System.out.print("Generating RSS")
+
+        val res = khttp.get(url = "http://localhost:7000")
+
+        val file = File("./src/main/resources/public/rss.xml")
+
+        file.writeText(res.text)
     }
 
 }
