@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
     app.routes {
 
         get("/") { ctx ->
-            ctx.render("test.peb", mapOf("pulses" to list))
+            ctx.render("news.peb", mapOf("pulses" to list))
         }
 
     }

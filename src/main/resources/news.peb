@@ -2,9 +2,9 @@
 <rss version="2.0">
 
 <channel>
-    <title>W3Schools Home Page</title>
-    <link>https://www.w3schools.com</link>
-    <description>Free web building tutorials</description>
+    <title>Gaming News From IGDB.com</title>
+    <link>https://www.IGDB.com</link>
+    <description>Biggest Gaming Database Ever</description>
     {% for pulse in pulses %}
     <item>
         <id>{{ pulse.id }}</id>
