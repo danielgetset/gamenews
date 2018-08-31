@@ -22,14 +22,12 @@ fun main(args: Array<String>) {
     app.routes {
 
         get("/") { ctx ->
-            ctx.render("news.xml", mapOf("pulses" to getGameNewsAndUpdate()))
+            ctx.redirect("/news.xml") // go directly to news rss file
         }
 
-    }
-
-    app.after("/") { ctx ->
-
-        ctx.redirect("/rss.xml")
+        get( "/news") { ctx ->
+            ctx.render("news.peb", mapOf("pulses" to getGameNewsAndUpdate()))
+        }
 
     }
 
@@ -39,13 +37,13 @@ fun main(args: Array<String>) {
 
 fun generateRss () {
 
-    timer(initialDelay = 1000, period = 30000) {
+    timer(initialDelay = 1000, period = 30000) { // every 30 second
 
-        System.out.print("Generating RSS")
+        System.out.print("Generating News RSS")
 
-        val res = khttp.get(url = "http://localhost:7000")
+        val res = khttp.get(url = "http://localhost:7000/news")
 
-        val file = File("./src/main/resources/public/rss.xml")
+        val file = File("./src/main/resources/public/news.xml")
 
         file.writeText(res.text)
     }
