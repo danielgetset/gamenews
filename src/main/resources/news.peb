@@ -7,14 +7,15 @@
     <description>Biggest Gaming Database Ever</description>
     {% for pulse in pulses %}
     <item>
-        <id>{{ pulse.id }}</id>
-        <pulsescore>{{ pulse.pulsescore }}</pulsescore>
         <title>{{ pulse.title }}</title>
-        <summary>{{ pulse.summary }}</summary>
-        <url>{{ pulse.url }}</url>
-        <uid>{{ pulse.uid }}</uid>
+        <description>
+            Summary: {{ pulse.summary }}
+            Pulse Score: {{ pulse.pulsescore }}
+        </description>
+        <link>{{ pulse.url }}</link>
+        <guid>{{ pulse.uid }}</guid>
         <author>{{ pulse.author }}</author>
-        <publishedat>{{ pulse.publishedat }}</publishedat>
+        <pubDate>{{ pulse.publishedat }}</pubDate>
     </item>
     {% endfor %}
 
