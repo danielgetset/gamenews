@@ -17,7 +17,12 @@ fun main(args: Array<String>) {
 
     JavalinRenderer.register(pebble, ".peb", ".pebble", ".html", ".xml")
 
-    val app = Javalin.create().enableStaticFiles("/public").start(7000)
+    val app = Javalin.create().enableStaticFiles("/public").start(getHerokuAssignedPort())
+
+    app.before("/") { ctx ->
+
+        generateRss()
+    }
 
     app.routes {
 
@@ -31,19 +36,24 @@ fun main(args: Array<String>) {
 
     }
 
-    generateRss()
+}
 
+private fun getHerokuAssignedPort(): Int {
+    val processBuilder = ProcessBuilder()
+    return if (processBuilder.environment()["PORT"] != null) {
+        Integer.parseInt(processBuilder.environment()["PORT"])
+    } else 7000
 }
 
 fun generateRss () {
 
-    timer(initialDelay = 1000, period = 30000) { // every 30 second
+    timer(initialDelay = 0, period = 30000) { // every 30 second
 
         System.out.print("Generating News RSS")
 
-        val res = khttp.get(url = "http://localhost:7000/news")
+        val res = khttp.get(url = "http://localhost:" + getHerokuAssignedPort() + "/news")
 
-        val file = File("./src/main/resources/public/news.xml")
+        val file = File("news.xml")
 
         file.writeText(res.text)
     }
