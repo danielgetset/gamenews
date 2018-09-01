@@ -1,5 +1,6 @@
 package app
 
+import com.beust.klaxon.Klaxon
 import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.Javalin
 import khttp.responses.Response
@@ -8,7 +9,6 @@ import io.javalin.rendering.template.JavalinPebble
 import io.javalin.rendering.JavalinRenderer
 import java.io.File
 import kotlin.concurrent.timer
-
 
 
 fun main(args: Array<String>) {
@@ -47,26 +47,44 @@ private fun getHerokuAssignedPort(): Int {
 
 fun generateRss () {
 
-    timer(initialDelay = 0, period = 30000) { // every 30 second
+    timer(initialDelay = 0, period = 30000) { // every 60 second
 
-        System.out.print("Generating News RSS")
+        print("Generating News RSS")
 
         val res = khttp.get(url = "http://localhost:" + getHerokuAssignedPort() + "/news")
 
-        val file = File("news.xml")
+        val file = File(pathtofile() + "public/news.xml")
 
         file.writeText(res.text)
+
+
     }
 
 }
+fun pathtofile (): String {
+
+    val processBuilder = ProcessBuilder()
+
+    if (processBuilder.environment()["OTHER_VAR"] == "production") {
+
+        return "/app/target/classes/"
+
+    } else return "./src/main/resources/"
+}
 
 fun getGameNewsAndUpdate () : Any {
+
+    val settingsFile = File(pathtofile() + "private/settings")
+
+    val settings = Klaxon().parse<Settings>(settingsFile.readText())
+
+    val apiKey  = settings!!.apiKey
 
     val parameters = mapOf("fields" to "*", "limit" to "50", "order" to "published_at:desc") // anything over 50 gave me response 400
 
     val response : Response = khttp.get(
             url = "https://api-endpoint.igdb.com/pulses/",
-            headers = mapOf("user-key" to "806879ca5122ba2a8accaa412e6a2f2d", "Accept" to "application/json"),
+            headers = mapOf("user-key" to apiKey, "Accept" to "application/json"),
             params = parameters)
 
     val pulses : JSONArray = response.jsonArray
@@ -93,4 +111,5 @@ fun getGameNewsAndUpdate () : Any {
     return list
 }
 
+class Settings(val userName: String, val apiKey: String)
 
