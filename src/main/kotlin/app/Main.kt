@@ -8,8 +8,6 @@ import org.json.JSONArray
 import io.javalin.rendering.template.JavalinPebble
 import io.javalin.rendering.JavalinRenderer
 import java.io.File
-import kotlin.concurrent.timer
-
 
 fun main(args: Array<String>) {
 
@@ -17,50 +15,35 @@ fun main(args: Array<String>) {
 
     JavalinRenderer.register(pebble, ".peb", ".pebble", ".html", ".xml")
 
-    val app = Javalin.create().enableStaticFiles("/public").start(getHerokuAssignedPort())
-
-    app.before("/") { ctx ->
-
-        generateRss()
-    }
+    val app = Javalin.create().start(getHerokuAssignedPort())
 
     app.routes {
 
-        get("/") { ctx ->
-            ctx.redirect("/news.xml") // go directly to news rss file
-        }
-
-        get( "/news") { ctx ->
-            ctx.render("news.peb", mapOf("pulses" to getGameNewsAndUpdate()))
+        get( "/") { ctx ->
+            ctx.render("news.peb", mapOf("pulses" to getGameNewsAndUpdate())).contentType("xml")
         }
 
     }
 
 }
 
-private fun getHerokuAssignedPort(): Int {
-    val processBuilder = ProcessBuilder()
-    return if (processBuilder.environment()["PORT"] != null) {
-        Integer.parseInt(processBuilder.environment()["PORT"])
-    } else 7000
-}
+//fun generateRss () {
+//
+//    //timer(initialDelay = 0, period = 60000) { // every 60 second
+//
+//        print("Generating News RSS")
+//        System.out.print("##### TESTING ###")
+//
+//        val res = khttp.get(url = "http://localhost:" + getHerokuAssignedPort() + "/news")
+//
+//        val file = File("/tmp/public/news.xml")
+//
+//        file.writeText(res.text)
+//
+//    //}
+//
+//}
 
-fun generateRss () {
-
-    timer(initialDelay = 0, period = 60000) { // every 60 second
-
-        print("Generating News RSS")
-
-        val res = khttp.get(url = "http://localhost:" + getHerokuAssignedPort() + "/news")
-
-        val file = File(pathtofile() + "public/news.xml")
-
-        file.writeText(res.text)
-
-
-    }
-
-}
 fun pathtofile (): String {
 
     val processBuilder = ProcessBuilder()
@@ -105,10 +88,21 @@ fun getGameNewsAndUpdate () : Any {
                 // author doesn't exist? : "author" to item["author"]
         )
 
+        //val stamp = Timestamp(System.currentTimeMillis())
+        //val date = Date(stamp.getTime())
+        //println(date)
+
         list.add(map)
     }
 
     return list
+}
+
+private fun getHerokuAssignedPort(): Int {
+    val processBuilder = ProcessBuilder()
+    return if (processBuilder.environment()["PORT"] != null) {
+        Integer.parseInt(processBuilder.environment()["PORT"])
+    } else 7000
 }
 
 class Settings(val userName: String, val apiKey: String)
