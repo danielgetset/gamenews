@@ -47,7 +47,7 @@ private fun getHerokuAssignedPort(): Int {
 
 fun generateRss () {
 
-    timer(initialDelay = 0, period = 30000) { // every 60 second
+    timer(initialDelay = 0, period = 60000) { // every 60 second
 
         print("Generating News RSS")
 
