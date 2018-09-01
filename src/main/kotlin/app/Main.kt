@@ -27,34 +27,6 @@ fun main(args: Array<String>) {
 
 }
 
-//fun generateRss () {
-//
-//    //timer(initialDelay = 0, period = 60000) { // every 60 second
-//
-//        print("Generating News RSS")
-//        System.out.print("##### TESTING ###")
-//
-//        val res = khttp.get(url = "http://localhost:" + getHerokuAssignedPort() + "/news")
-//
-//        val file = File("/tmp/public/news.xml")
-//
-//        file.writeText(res.text)
-//
-//    //}
-//
-//}
-
-fun pathtofile (): String {
-
-    val processBuilder = ProcessBuilder()
-
-    if (processBuilder.environment()["OTHER_VAR"] == "production") {
-
-        return "/app/target/classes/"
-
-    } else return "./src/main/resources/"
-}
-
 fun getGameNewsAndUpdate () : Any {
 
     val settingsFile = File(pathtofile() + "private/settings")
@@ -75,7 +47,13 @@ fun getGameNewsAndUpdate () : Any {
     val list = mutableListOf<Map<String, Any>>()
 
     for (i in 0..(pulses.length() - 1)) {
+
         val item = pulses.getJSONObject(i)
+
+        val sdf = java.text.SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z")
+        val date = java.util.Date(item["published_at"].toString().toLong())
+        val published = sdf.format(date).toString()
+
 
         val map = mapOf(
                 "id" to item["id"],
@@ -84,18 +62,25 @@ fun getGameNewsAndUpdate () : Any {
                 "summary" to item["summary"],
                 "url" to item["url"],
                 "uid" to item["uid"],
-                "publishedat" to item["published_at"]
+                "publishedat" to published
                 // author doesn't exist? : "author" to item["author"]
         )
-
-        //val stamp = Timestamp(System.currentTimeMillis())
-        //val date = Date(stamp.getTime())
-        //println(date)
 
         list.add(map)
     }
 
     return list
+}
+
+fun pathtofile (): String {
+
+    val processBuilder = ProcessBuilder()
+
+    if (processBuilder.environment()["OTHER_VAR"] == "production") {
+
+        return "/app/target/classes/"
+
+    } else return "./src/main/resources/"
 }
 
 private fun getHerokuAssignedPort(): Int {

@@ -9,15 +9,12 @@
     <item>
         <title>{{ pulse.title }}</title>
         <description>
-            Summary: {{ pulse.summary }}
-            Pulse Score: {{ pulse.pulsescore }}
+            {{ pulse.summary }}
         </description>
         <link>{{ pulse.url }}</link>
-        <guid>{{ pulse.uid }}</guid>
-        <author>{{ pulse.author }}</author>
+        <guid>{{ pulse.url }}</guid>
         <pubDate>{{ pulse.publishedat }}</pubDate>
     </item>
     {% endfor %}
-
 </channel>
 </rss>
