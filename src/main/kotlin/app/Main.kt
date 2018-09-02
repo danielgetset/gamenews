@@ -12,7 +12,6 @@ import java.io.File
 fun main(args: Array<String>) {
 
     val pebble = JavalinPebble
-
     JavalinRenderer.register(pebble, ".peb", ".pebble", ".html", ".xml")
 
     val app = Javalin.create().start(getHerokuAssignedPort())
@@ -22,7 +21,6 @@ fun main(args: Array<String>) {
         get( "/") { ctx ->
             ctx.render("news.peb", mapOf("pulses" to getGameNewsAndUpdate())).contentType("xml")
         }
-
     }
 
 }
@@ -30,9 +28,7 @@ fun main(args: Array<String>) {
 fun getGameNewsAndUpdate () : Any {
 
     val settingsFile = File(pathtofile() + "private/settings")
-
     val settings = Klaxon().parse<Settings>(settingsFile.readText())
-
     val apiKey  = settings!!.apiKey
 
     val parameters = mapOf("fields" to "*", "limit" to "50", "order" to "published_at:desc") // anything over 50 gave me response 400
@@ -53,7 +49,6 @@ fun getGameNewsAndUpdate () : Any {
         val sdf = java.text.SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z")
         val date = java.util.Date(item["published_at"].toString().toLong())
         val published = sdf.format(date).toString()
-
 
         val map = mapOf(
                 "id" to item["id"],
